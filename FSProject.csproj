@@ -131,9 +131,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseFunctiond\CheckEntityClass.cs" />
     <Compile Include="DataClass\DataClass.cs" />
-    <Compile Include="Enums\Enums.cs" />
     <Compile Include="Menu\CountMenu.cs" />
     <Compile Include="Forms\ObjectsPanel.cs">
       <SubType>Form</SubType>

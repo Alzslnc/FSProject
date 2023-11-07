@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ApplicationPackage SchemaVersion="1.0" AppVersion="1.0"
-    ProductCode="{8A895C34-2DC3-4EEB-B37E-9C6F3F0B5323}"
+    ProductCode="{7DC1A0D2-DA8A-417F-B38A-9F2B91AB5B49}"
     Name="FSProject"
 >
  
@@ -10,7 +10,6 @@
   />
  
   <Components>
-    <RuntimeRequirements OS="Win64" Platform="AutoCad | Civil3D"/>
     <ComponentEntry
       ModuleName="./Contents/FSProject.dll"
     />

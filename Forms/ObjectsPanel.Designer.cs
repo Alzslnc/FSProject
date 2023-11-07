@@ -57,9 +57,9 @@
             this.Panel_Color.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Panel_Color.Controls.Add(this.Check_AllColors);
             this.Panel_Color.Controls.Add(this.label1);
-            this.Panel_Color.Location = new System.Drawing.Point(12, 62);
+            this.Panel_Color.Location = new System.Drawing.Point(12, 49);
             this.Panel_Color.Name = "Panel_Color";
-            this.Panel_Color.Size = new System.Drawing.Size(153, 378);
+            this.Panel_Color.Size = new System.Drawing.Size(690, 120);
             this.Panel_Color.TabIndex = 0;
             // 
             // Check_AllColors
@@ -88,9 +88,9 @@
             this.Panel_Layer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Panel_Layer.Controls.Add(this.Check_AllLayers);
             this.Panel_Layer.Controls.Add(this.label2);
-            this.Panel_Layer.Location = new System.Drawing.Point(171, 62);
+            this.Panel_Layer.Location = new System.Drawing.Point(12, 175);
             this.Panel_Layer.Name = "Panel_Layer";
-            this.Panel_Layer.Size = new System.Drawing.Size(153, 378);
+            this.Panel_Layer.Size = new System.Drawing.Size(690, 120);
             this.Panel_Layer.TabIndex = 1;
             // 
             // Check_AllLayers
@@ -119,9 +119,9 @@
             this.Panel_Type.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Panel_Type.Controls.Add(this.Check_AllTypes);
             this.Panel_Type.Controls.Add(this.label3);
-            this.Panel_Type.Location = new System.Drawing.Point(330, 62);
+            this.Panel_Type.Location = new System.Drawing.Point(12, 301);
             this.Panel_Type.Name = "Panel_Type";
-            this.Panel_Type.Size = new System.Drawing.Size(153, 378);
+            this.Panel_Type.Size = new System.Drawing.Size(690, 120);
             this.Panel_Type.TabIndex = 1;
             // 
             // Check_AllTypes
@@ -150,9 +150,9 @@
             this.Panel_Length.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Panel_Length.Controls.Add(this.Check_AllLengths);
             this.Panel_Length.Controls.Add(this.label4);
-            this.Panel_Length.Location = new System.Drawing.Point(489, 62);
+            this.Panel_Length.Location = new System.Drawing.Point(12, 427);
             this.Panel_Length.Name = "Panel_Length";
-            this.Panel_Length.Size = new System.Drawing.Size(153, 378);
+            this.Panel_Length.Size = new System.Drawing.Size(690, 120);
             this.Panel_Length.TabIndex = 2;
             // 
             // Check_AllLengths
@@ -226,13 +226,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(654, 452);
+            this.ClientSize = new System.Drawing.Size(714, 567);
             this.Controls.Add(this.Check_Full);
             this.Controls.Add(this.Label_Current);
+            this.Controls.Add(this.Panel_Length);
             this.Controls.Add(this.Label_All);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
-            this.Controls.Add(this.Panel_Length);
             this.Controls.Add(this.Panel_Type);
             this.Controls.Add(this.Panel_Layer);
             this.Controls.Add(this.Panel_Color);

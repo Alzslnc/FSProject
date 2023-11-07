@@ -132,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataClass\DataClass.cs" />
+    <Compile Include="DataClass\ObjectData.cs" />
     <Compile Include="Menu\CountMenu.cs" />
     <Compile Include="Forms\ObjectsPanel.cs">
       <SubType>Form</SubType>

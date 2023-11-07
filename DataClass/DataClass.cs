@@ -134,14 +134,14 @@ namespace FSProject
             return curve.GetDistanceAtParameter(curve.EndParam) - curve.GetDistanceAtParameter(curve.StartParam);
         }
         public int CurrentSelect { get; private set; } = 0;
-        public List<string> AllColors { get; private set; } = new List<string>();
-        public List<string> AllLayers { get; private set; } = new List<string>();
-        public List<string> AllTypes { get; private set; } = new List<string>();
-        public List<string> AllLengths { get; private set; } = new List<string>();
-        public List<string> SelectedColors { get; set; } = new List<string>();
-        public List<string> SelectedLayers { get; set; } = new List<string>();
-        public List<string> SelectedTypes { get; set; } = new List<string>();
-        public List<string> SelectedLengths { get; set; } = new List<string>();
+        public List<ObjectData> AllColors { get; private set; } = new List<ObjectData>();
+        public List<ObjectData> AllLayers { get; private set; } = new List<ObjectData>();
+        public List<ObjectData> AllTypes { get; private set; } = new List<ObjectData>();
+        public List<ObjectData> AllLengths { get; private set; } = new List<ObjectData>();
+        public List<ObjectData> SelectedColors { get; set; } = new List<ObjectData>();
+        public List<ObjectData> SelectedLayers { get; set; } = new List<ObjectData>();
+        public List<ObjectData> SelectedTypes { get; set; } = new List<ObjectData>();
+        public List<ObjectData> SelectedLengths { get; set; } = new List<ObjectData>();
         public List<ObjectId> Ids { get; set; }        
         private Database CurrDb { get; set; } 
         private Document CurrDoc { get; set; }

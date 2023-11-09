@@ -34,5 +34,29 @@ namespace FSProject.Properties {
                 this["Full"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int Round {
+            get {
+                return ((int)(this["Round"]));
+            }
+            set {
+                this["Round"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool Auto {
+            get {
+                return ((bool)(this["Auto"]));
+            }
+            set {
+                this["Auto"] = value;
+            }
+        }
     }
 }

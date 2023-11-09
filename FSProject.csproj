@@ -131,8 +131,17 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseFunctions\BaseGeometryClass.cs" />
     <Compile Include="DataClass\DataClass.cs" />
+    <Compile Include="DataClass\DataClassList.cs" />
     <Compile Include="DataClass\ObjectData.cs" />
+    <Compile Include="Enums\Enums.cs" />
+    <Compile Include="Forms\Options.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Options.Designer.cs">
+      <DependentUpon>Options.cs</DependentUpon>
+    </Compile>
     <Compile Include="Menu\CountMenu.cs" />
     <Compile Include="Forms\ObjectsPanel.cs">
       <SubType>Form</SubType>
@@ -151,6 +160,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\ObjectsPanel.resx">
       <DependentUpon>ObjectsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Options.resx">
+      <DependentUpon>Options.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

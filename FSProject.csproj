@@ -149,6 +149,14 @@
     <Compile Include="Forms\ObjectsPanel.Designer.cs">
       <DependentUpon>ObjectsPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Progress\Forms\ProgressWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Progress\Forms\ProgressWindow.Designer.cs">
+      <DependentUpon>ProgressWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Progress\ProgressDialog.cs" />
+    <Compile Include="Progress\ViewModel\ViewModel.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -163,6 +171,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Options.resx">
       <DependentUpon>Options.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Progress\Forms\ProgressWindow.resx">
+      <DependentUpon>ProgressWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

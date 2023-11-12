@@ -151,12 +151,13 @@ namespace FSProject.Forms
             if (AllCheckLock) return;
             if (!(sender is CheckBox box)) return;
             if (!(box.Parent is Panel panel)) return;
+            bool curBlockEvent = BlockEvents;
             BlockEvents = true;
             foreach (Control control in panel.Controls)
             {
                 if (control is CheckBox checkBox && checkBox != box) checkBox.Checked = box.Checked;
             }
-            BlockEvents = false;
+            BlockEvents = curBlockEvent;
             ChangeObject(panel);
         }    
         private void Check_Full_CheckedChanged(object sender, EventArgs e)
@@ -197,7 +198,7 @@ namespace FSProject.Forms
             UpdateSelected();
         }
         private void UpdateSelected()
-        {
+        {          
             Data.SelectSelected();
             Label_Current.Text = Data.CurrentSelect.ToString();
             Label_Deleted.Text = Data.Deleted.ToString();

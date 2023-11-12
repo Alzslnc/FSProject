@@ -1,13 +1,8 @@
 ﻿using Autodesk.AutoCAD.ApplicationServices;
-using Autodesk.AutoCAD.Colors;
 using Autodesk.AutoCAD.DatabaseServices;
 using Autodesk.AutoCAD.EditorInput;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace FSProject
 {
@@ -37,107 +32,163 @@ namespace FSProject
             if (doc == null) return;
             if (doc != CurrDoc) return;
             int deleted = 0;
+
+            Progress.ProgressDialog dialog = null;
+
             using (doc.LockDocument())
             { 
                 List<ObjectId> SelectedId = new List<ObjectId>();
                 if (HostApplicationServices.WorkingDatabase == CurrDb)
                 {
-                    using (Transaction tr = HostApplicationServices.WorkingDatabase.TransactionManager.StartTransaction())
-                    {                        
-                        foreach (ObjectId id in Ids)
+                    
+
+                    int step = 0;
+                    int curStep = 0;
+
+                    if (Ids.Count > 3000)
+                    {
+                        dialog = new Progress.ProgressDialog();
+                        dialog.MainBarCount = Ids.Count;                     
+                        dialog.MainStep = 20;
+                        dialog.UseCancel = false;
+                        dialog.UseSubBar = false;
+                        dialog.MainMessage = "Считываем данные (" + step + " из " + Ids.Count + ")";
+                        dialog.Start();
+                       
+                    }
+
+                    foreach (ObjectId id in Ids)
+                    {
+                        if (dialog != null)
                         {
-                            if (id == null || id == ObjectId.Null || !id.IsValid || id.IsErased)
+                            step++;
+                            curStep++;
+                            if (curStep == 19)
                             {
-                                deleted++;
-                                continue;
-                            }                                
-                            using (Entity e = tr.GetObject(id, OpenMode.ForRead, false, true) as Entity)
+                                curStep = 0;
+                                dialog.StepMainBar();
+                                dialog.MainMessage = "Считываем данные (" + step + " из " + Ids.Count + ")";
+                            }
+                        }
+                        if (id == null || id == ObjectId.Null || !id.IsValid || id.IsErased)
+                        {
+                            deleted++;
+                            continue;
+                        }
+                        using (Entity e = id.Open(OpenMode.ForRead, false, true) as Entity)
+                        {
+                            if (e != null)
                             {
-                                if (e != null)
+                                string eColor = e.Color.ToString();
+                                string eLayer = e.Layer.ToString();
+                                string eType = id.ObjectClass.Name;
+                                double length = -1;
+                                List<string> attributes = new List<string>();
+                                if (e is Curve c)
                                 {
-                                    string eColor = e.Color.ToString();
-                                    string eLayer = e.Layer.ToString();
-                                    string eType = id.ObjectClass.Name;                                 
-                                    double length = -1;
-                                    List<string> attributes = new List<string>();  
-                                    if (e is Curve c)
+                                    length = Math.Round(GetLength(c), Round);
+                                }
+                                if (e is BlockReference reference)
+                                {
+                                    foreach (ObjectId attrId in reference.AttributeCollection)
                                     {
-                                        length = Math.Round(GetLength(c), Round);                                                                  
-                                    }
-                                    if (e is BlockReference reference)
-                                    {
-                                        foreach (ObjectId attrId in reference.AttributeCollection)
+                                        using (AttributeReference attRef = attrId.Open(OpenMode.ForRead, false, true) as AttributeReference)
                                         {
-                                            using (AttributeReference attRef = tr.GetObject(attrId, OpenMode.ForRead, false, true) as AttributeReference)
+                                            if (attRef == null)
                                             {
-                                                if (attRef == null) continue;
-                                                attributes.Add(attRef.Tag);
+                                                attRef.Close();
+                                                continue;
                                             }
-                                        }
-                                    }
-                                    if (Colors.CheckData(eColor))
-                                    {
-                                        if (!Full)
-                                        {
-                                            SelectedId.Add(id);
-                                            continue;
-                                        }
-                                    }
-                                    else if (Full) continue;
-                                    if (Layers.CheckData(eLayer))
-                                    {
-                                        if (!Full)
-                                        {
-                                            SelectedId.Add(id);
-                                            continue;
-                                        }
-                                    }
-                                    else if (Full) continue;
-                                    if (Types.CheckData(eType))
-                                    {
-                                        if (!Full)
-                                        {
-                                            SelectedId.Add(id);
-                                            continue;
-                                        }
-                                    }
-                                    else if (Full) continue;
-                                    if (length < 0 && attributes.Count == 0)
-                                    {
-                                        if (Full)
-                                        {
-                                            SelectedId.Add(id);
-                                        }
-                                        continue;
-                                    }
-                                    else if (attributes.Count > 0)
-                                    {
-                                        foreach (string attribute in attributes)
-                                        {
-                                            if (Attributes.CheckData(attribute))
-                                            {
-                                                SelectedId.Add(id);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    else if (length >= 0)
-                                    {
-                                        if (Lengths.CheckData(length))
-                                        {
-                                            SelectedId.Add(id);
+                                            attributes.Add(attRef.Tag);
+                                            attRef.Close();
                                         }
                                     }
                                 }
-                            
+                                if (Colors.CheckData(eColor))
+                                {
+                                    if (!Full)
+                                    {
+                                        SelectedId.Add(id);
+                                        e.Close();
+                                        continue;
+                                    }
+                                }
+                                else if (Full)
+                                {
+                                    e.Close();
+                                    continue;
+                                }
+                                if (Layers.CheckData(eLayer))
+                                {
+                                    if (!Full)
+                                    {
+                                        SelectedId.Add(id);
+                                        e.Close();
+                                        continue;
+                                    }
+                                }
+                                else if (Full)
+                                {
+                                    e.Close();
+                                    continue;
+                                }
+                                if (Types.CheckData(eType))
+                                {
+                                    if (!Full)
+                                    {
+                                        SelectedId.Add(id);
+                                        e.Close();
+                                        continue;
+                                    }
+                                }
+                                else if (Full)
+                                {
+                                    e.Close();
+                                    continue;
+                                }
+                                if (length < 0 && attributes.Count == 0)
+                                {
+                                    if (Full)
+                                    {
+                                        SelectedId.Add(id);
+                                    }
+                                    e.Close();
+                                    continue;
+                                }
+                                else if (attributes.Count > 0)
+                                {
+                                    foreach (string attribute in attributes)
+                                    {
+                                        if (Attributes.CheckData(attribute))
+                                        {
+                                            SelectedId.Add(id);
+                                            break;
+                                        }
+                                    }
+                                }
+                                else if (length >= 0)
+                                {
+                                    if (Lengths.CheckData(length))
+                                    {
+                                        SelectedId.Add(id);
+                                    }
+                                }
                             }
+                            e?.Close();
                         }
                     }
+                    
                 }
                 CurrentSelect = SelectedId.Count;
                 Deleted = deleted;
+
+                if (dialog != null)
+                {
+                    dialog.MainMessage = "Выбираем объекты";
+                }
                 doc.Editor.SetImpliedSelection(SelectedId.ToArray());
             }
+            dialog?.Dispose();
         }
         public void Update()
         {
@@ -152,43 +203,73 @@ namespace FSProject
 
             int deleted = 0;
 
-            using (Transaction tr = HostApplicationServices.WorkingDatabase.TransactionManager.StartTransaction())
+            Progress.ProgressDialog dialog = null;
+
+            int step = 0;
+            int curStep = 0;
+
+            if (Ids.Count > 3000)
             {
-                foreach (ObjectId id in Ids)
-                {
-                    if (id == null || id == ObjectId.Null || !id.IsValid || id.IsErased)
+                dialog = new Progress.ProgressDialog();
+                dialog.MainBarCount = Ids.Count;
+                dialog.UseCancel = false;
+                dialog.UseSubBar = false;
+                dialog.MainStep = 20;
+                dialog.MainMessage = "Считываем данные (" + step + " из " + Ids.Count + ")";
+                dialog.Start();           
+            }
+            
+
+            foreach (ObjectId id in Ids)
+            {
+                if (dialog != null)
+                {                    
+                    if (curStep == 19)
                     {
-                        deleted++;
-                        continue;
+                        curStep = 0;
+                        dialog.StepMainBar();
+                        dialog.MainMessage = "Считываем данные (" + step + " из " + Ids.Count + ")";
                     }
-                    using (Entity e = tr.GetObject(id, OpenMode.ForRead, false, true) as Entity)
+                    step++;
+                    curStep++;
+                }
+                if (id == null || id == ObjectId.Null || !id.IsValid || id.IsErased)
+                {
+                    deleted++;
+                    continue;
+                }
+                using (Entity e = id.Open(OpenMode.ForRead, false, true) as Entity)
+                {
+                    if (e != null)
                     {
-                        if (e != null)
+                        AddData(Colors, e.Color.ToString());
+                        AddData(Layers, e.Layer.ToString());
+                        AddData(Types, id.ObjectClass.Name);
+                        if (e is Curve c)
                         {
-                            AddData(Colors, e.Color.ToString());
-                            AddData(Layers, e.Layer.ToString());
-                            AddData(Types, id.ObjectClass.Name);
-                            if (e is Curve c)
+                            double length = Math.Round(GetLength(c), Round);
+                            AddData(Lengths, length);
+                        }
+                        else if (e is BlockReference reference)
+                        {
+                            foreach (ObjectId attrId in reference.AttributeCollection)
                             {
-                                double length = Math.Round(GetLength(c), Round);
-                                AddData(Lengths, length);
-                            }
-                            else if (e is BlockReference reference)
-                            {                              
-                                foreach (ObjectId attrId in reference.AttributeCollection)
-                                {                             
-                                    using (AttributeReference attRef = tr.GetObject(attrId, OpenMode.ForRead, false, true) as AttributeReference)
+                                using (AttributeReference attRef = attrId.Open(OpenMode.ForRead, false, true) as AttributeReference)
+                                {
+                                    if (attRef == null)
                                     {
-                                        if (attRef == null) continue;
-                                        AddData(Attributes, attRef.Tag);
-                                    }
+                                        attRef.Close();
+                                        continue;
+                                    }                                       
+                                    AddData(Attributes, attRef.Tag);
+                                    attRef.Close();
                                 }
                             }
                         }
-
                     }
-                }
-            }
+                    e?.Close();
+                }               
+            }            
 
             Deleted = deleted;
 
@@ -203,6 +284,8 @@ namespace FSProject
             Types.SortData();
             Attributes.SortData();
             Lengths.SortData();  
+
+            dialog?.Dispose();
         }
         private void AddData(List<ObjectData> dataList, string name)
         {

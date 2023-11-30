@@ -174,7 +174,7 @@
             this.Panel_Length.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Panel_Length.Controls.Add(this.Check_AllLengths);
             this.Panel_Length.Controls.Add(this.label4);
-            this.Panel_Length.Location = new System.Drawing.Point(420, 52);
+            this.Panel_Length.Location = new System.Drawing.Point(420, 208);
             this.Panel_Length.Name = "Panel_Length";
             this.Panel_Length.Size = new System.Drawing.Size(250, 150);
             this.Panel_Length.TabIndex = 2;
@@ -314,11 +314,10 @@
             this.Panel_AttributesTag.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Panel_AttributesTag.Controls.Add(this.Check_AllAttributes);
             this.Panel_AttributesTag.Controls.Add(this.label8);
-            this.Panel_AttributesTag.Location = new System.Drawing.Point(420, 208);
+            this.Panel_AttributesTag.Location = new System.Drawing.Point(420, 52);
             this.Panel_AttributesTag.Name = "Panel_AttributesTag";
             this.Panel_AttributesTag.Size = new System.Drawing.Size(250, 150);
             this.Panel_AttributesTag.TabIndex = 5;
-            
             // 
             // Check_AllAttributes
             // 

@@ -41,10 +41,19 @@ namespace FSProject
 
             using (doc.LockDocument())
             {
-                Entity entity = Ids[0].Open(OpenMode.ForRead) as Entity;
-                ObjectId currSpId = entity.OwnerId;
-                entity.Close();
-                if (currSpId != CurrSpaceId)
+                bool necurr = true;
+                using (BlockTableRecord btr = HostApplicationServices.WorkingDatabase.CurrentSpaceId.Open(OpenMode.ForRead) as BlockTableRecord)
+                {
+                    foreach (ObjectId id in btr)
+                    {
+                        if (id.Equals(Ids[0]))
+                        { 
+                            necurr = false;
+                            break;
+                        }                    
+                    }                
+                }                 
+                if (necurr)
                 {
                     System.Windows.Forms.MessageBox.Show("Объекты находятся в другом пространстве");
                     return false;
@@ -233,6 +242,10 @@ namespace FSProject
                 try
                 {
                     doc.Editor.SetImpliedSelection(SelectedId.ToArray());
+                    if (SelectedId.Count == 0)
+                    { 
+                        doc.Window.Focus();                    
+                    }
                 }
                 catch 
                 {

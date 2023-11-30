@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Autodesk.AutoCAD.DatabaseServices;
+using System.Collections.Generic;
 
 namespace FSProject
 {
@@ -7,6 +8,14 @@ namespace FSProject
         public DataClass AddNewData()
         {
             int i = 1;
+            string name = "";
+            using (Transaction tr = HostApplicationServices.WorkingDatabase.TransactionManager.StartTransaction())
+            {
+                using (BlockTableRecord btr = tr.GetObject(HostApplicationServices.WorkingDatabase.CurrentSpaceId, OpenMode.ForRead) as BlockTableRecord) name = btr.Name;
+                tr.Commit();
+            }
+            //while (ContainName(name + "_" + i.ToString())) i++;
+            //DataClass data = new DataClass(name + "_" + i.ToString());
             while (ContainName(i.ToString())) i++;
             DataClass data = new DataClass(i.ToString());
             if (!data.Exist) return null;

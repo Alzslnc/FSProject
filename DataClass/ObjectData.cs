@@ -5,13 +5,18 @@ namespace FSProject
 {
     public class ObjectData
     {
+        public ObjectData(string name, string name2, EntityType entityType)
+        {
+            EntityType = entityType;
+            Name = name;         
+        }
         public ObjectData(string name) 
         { 
             Name = name;
         }
-        public ObjectData(double length)
+        public ObjectData(double length, EntityType entityType)
         {
-            EntityType = EntityType.Curve;
+            EntityType = entityType;
             Length = length;
         }
         public EntityType EntityType { get; private set; } = EntityType.none;
@@ -19,6 +24,7 @@ namespace FSProject
         public bool Check { get; set; } = true;
         public string Name { get; private set; } = "";
         public int Count { get; set; } = 0;
+        public List<ObjectData> ObjectDatas { get; private set; } = new List<ObjectData>();
     }
 
     public static class ObjectDataMethods
@@ -29,7 +35,7 @@ namespace FSProject
             foreach (ObjectData data in datas)
             {
                 string parametr;
-                if (data.EntityType == EntityType.Curve) parametr = data.Length.ToString("F" + round);
+                if (data.EntityType == EntityType.Curve || data.EntityType == EntityType.Text) parametr = data.Length.ToString("F" + round);             
                 else parametr = data.Name;
                 if (changes.Contains(parametr)) data.Check = true; 
                 else data.Check = false;            
@@ -56,7 +62,7 @@ namespace FSProject
             List<double> doubles = new List<double>();
             foreach (ObjectData data in datas)
             { 
-                if (data.EntityType == EntityType.Curve) doubles.Add(data.Length);
+                if (data.EntityType == EntityType.Curve || data.EntityType == EntityType.Text) doubles.Add(data.Length);
                 else strings.Add(data.Name);            
             }
             strings.Sort();
@@ -80,7 +86,10 @@ namespace FSProject
                     datas.Remove(data);
                 }
             }
-            datas.AddRange(result);
+            foreach (ObjectData data in result)
+            {
+                if (data != null) datas.Add(data);
+            }          
         }   
         public static bool CheckData(this List<ObjectData> datas, string name)
         { 
@@ -102,18 +111,22 @@ namespace FSProject
         }
         public static ObjectData GetData(this List<ObjectData> datas, string name)
         {
-            foreach (ObjectData data in datas) if (data.EntityType == EntityType.none && data.Name == name) return data;         
+            foreach (ObjectData data in datas) if ((data.EntityType == EntityType.none || data.EntityType == EntityType.BlockReference) && data.Name == name) return data;         
             return null;
         }
         public static bool ContainsData(this List<ObjectData> datas, double length)
         {
             if (datas.Count == 0) return false;
-            foreach (ObjectData data in datas) if (data.EntityType == EntityType.Curve && data.Length.IsEqualTo(length)) return true;
+            foreach (ObjectData data in datas) if ((
+                    data.EntityType == EntityType.Curve || 
+                    data.EntityType == EntityType.Text) && data.Length.IsEqualTo(length)) return true;
             return false;
         }
         public static ObjectData GetData(this List<ObjectData> datas, double length)
         {
-            foreach (ObjectData data in datas) if (data.EntityType == EntityType.Curve && data.Length.IsEqualTo(length)) return data;
+            foreach (ObjectData data in datas) if ((
+                    data.EntityType == EntityType.Curve ||
+                    data.EntityType == EntityType.Text) && data.Length.IsEqualTo(length)) return data;
             return null;
         }
     }

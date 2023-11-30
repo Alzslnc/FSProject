@@ -12,6 +12,7 @@ namespace FSProject
         {
             List<ObjectId> ids = new List<ObjectId>();
             CurrDb = HostApplicationServices.WorkingDatabase;
+            //CurrSpaceId = HostApplicationServices.WorkingDatabase.CurrentSpaceId;
             CurrDoc = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument;
             Editor ed = CurrDoc.Editor;
             using (CurrDoc.LockDocument())
@@ -26,22 +27,31 @@ namespace FSProject
             }
         }
         
-        public void SelectSelected()
+        public bool SelectSelected()
         {
             Document doc = Autodesk.AutoCAD.ApplicationServices.Application.DocumentManager.MdiActiveDocument;
-            if (doc == null) return;
-            if (doc != CurrDoc) return;
+            if (doc == null) return false;
+            if (doc != CurrDoc) return false;
+            if (Ids.Count == 0) return false;
+             
+
             int deleted = 0;
 
             Progress.ProgressDialog dialog = null;
 
             using (doc.LockDocument())
-            { 
+            {
+                Entity entity = Ids[0].Open(OpenMode.ForRead) as Entity;
+                ObjectId currSpId = entity.OwnerId;
+                entity.Close();
+                if (currSpId != CurrSpaceId)
+                {
+                    System.Windows.Forms.MessageBox.Show("Объекты находятся в другом пространстве");
+                    return false;
+                }
                 List<ObjectId> SelectedId = new List<ObjectId>();
                 if (HostApplicationServices.WorkingDatabase == CurrDb)
-                {
-                    
-
+                {      
                     int step = 0;
                     int curStep = 0;
 
@@ -84,9 +94,22 @@ namespace FSProject
                                 string eType = id.ObjectClass.Name;
                                 double length = -1;
                                 List<string> attributes = new List<string>();
+                                List<string> attributesVal = new List<string>();
+                                EntityType entityType = EntityType.none;
                                 if (e is Curve c)
                                 {
                                     length = Math.Round(GetLength(c), Round);
+                                    entityType = EntityType.Curve;
+                                }
+                                else if (e is DBText dText)
+                                {
+                                    length = Math.Round(dText.Height, Round);
+                                    entityType = EntityType.Text;
+                                }
+                                else if (e is MText mText)
+                                {
+                                    length = Math.Round(mText.TextHeight, Round);
+                                    entityType = EntityType.Text;
                                 }
                                 if (e is BlockReference reference)
                                 {
@@ -100,9 +123,15 @@ namespace FSProject
                                                 continue;
                                             }
                                             attributes.Add(attRef.Tag);
+                                            attributesVal.Add(attRef.TextString);
                                             attRef.Close();
                                         }
                                     }
+                                    if (attributes.Count == 0)
+                                    {
+                                        attributes.Add("_none_attributed");
+                                        attributesVal.Add("_none_attributed");
+                                    }   
                                 }
                                 if (Colors.CheckData(eColor))
                                 {
@@ -146,7 +175,7 @@ namespace FSProject
                                     e.Close();
                                     continue;
                                 }
-                                if (length < 0 && attributes.Count == 0)
+                                if (length < 0 && attributes.Count == 0 && attributesVal.Count == 0)
                                 {
                                     if (Full)
                                     {
@@ -155,20 +184,34 @@ namespace FSProject
                                     e.Close();
                                     continue;
                                 }
-                                else if (attributes.Count > 0)
+                                else if (attributes.Count > 0 && attributesVal.Count > 0)
                                 {
+                                    bool norm = false;
                                     foreach (string attribute in attributes)
                                     {
                                         if (Attributes.CheckData(attribute))
                                         {
-                                            SelectedId.Add(id);
-                                            break;
-                                        }
-                                    }
-                                }
+                                            ObjectData data = Attributes.GetData(attribute);
+                                            foreach (string val in attributesVal)
+                                            {
+                                                if (data.ObjectDatas.CheckData(val))
+                                                {
+                                                    norm = true;
+                                                    SelectedId.Add(id);
+                                                    break;
+                                                }
+                                            }
+                                        }                                      
+                                        if (norm) break;
+                                    }                                   
+                                }                             
                                 else if (length >= 0)
                                 {
-                                    if (Lengths.CheckData(length))
+                                    if (entityType == EntityType.Curve && Lengths.CheckData(length))
+                                    {
+                                        SelectedId.Add(id);
+                                    }
+                                    else if (entityType == EntityType.Text && TextHeigths.CheckData(length))
                                     {
                                         SelectedId.Add(id);
                                     }
@@ -176,8 +219,9 @@ namespace FSProject
                             }
                             e?.Close();
                         }
+
                     }
-                    
+                 
                 }
                 CurrentSelect = SelectedId.Count;
                 Deleted = deleted;
@@ -186,17 +230,34 @@ namespace FSProject
                 {
                     dialog.MainMessage = "Выбираем объекты";
                 }
-                doc.Editor.SetImpliedSelection(SelectedId.ToArray());
+                try
+                {
+                    doc.Editor.SetImpliedSelection(SelectedId.ToArray());
+                }
+                catch 
+                {
+                    System.Windows.Forms.MessageBox.Show("Объекты находятся в другом пространстве");
+                    dialog?.Dispose();
+                    return false;
+                }
             }
             dialog?.Dispose();
+            return true;
         }
         public void Update()
         {
+            if (Ids.Count == 0) return;
+           
+            Entity entity = Ids[0].Open(OpenMode.ForRead) as Entity;
+            CurrSpaceId = entity.OwnerId;
+            entity.Close();            
+
             Colors.ClearDataCounts();
             Layers.ClearDataCounts();
             Types.ClearDataCounts();
             Attributes.ClearDataCounts();
             Lengths.ClearDataCounts();
+            TextHeigths.ClearDataCounts();
 
             Full = Properties.Settings.Default.Full;
             Round = Properties.Settings.Default.Round;
@@ -248,10 +309,21 @@ namespace FSProject
                         if (e is Curve c)
                         {
                             double length = Math.Round(GetLength(c), Round);
-                            AddData(Lengths, length);
+                            AddData(Lengths, length, EntityType.Curve);
+                        }
+                        else if (e is DBText dText)
+                        {
+                            double length = Math.Round(dText.Height, Round);
+                            AddData(TextHeigths, length, EntityType.Text);
+                        }
+                        else if (e is MText mText)
+                        {
+                            double length = Math.Round(mText.TextHeight, Round);
+                            AddData(TextHeigths, length, EntityType.Text);
                         }
                         else if (e is BlockReference reference)
                         {
+                            bool noneAttr = true;
                             foreach (ObjectId attrId in reference.AttributeCollection)
                             {
                                 using (AttributeReference attRef = attrId.Open(OpenMode.ForRead, false, true) as AttributeReference)
@@ -261,9 +333,14 @@ namespace FSProject
                                         attRef.Close();
                                         continue;
                                     }                                       
-                                    AddData(Attributes, attRef.Tag);
+                                    AddData(Attributes, attRef.Tag, attRef.TextString, EntityType.BlockReference);                                 
+                                    noneAttr = false;
                                     attRef.Close();
                                 }
+                            }
+                            if (noneAttr)
+                            {
+                                AddData(Attributes, "_none_attributed");                              
                             }
                         }
                     }
@@ -287,6 +364,23 @@ namespace FSProject
 
             dialog?.Dispose();
         }
+        private void AddData(List<ObjectData> dataList, string name, string name2, EntityType entityType)
+        {
+            ObjectData data = dataList.GetData(name);
+            if (data == null)
+            {
+                data = new ObjectData(name, name2, entityType);
+                dataList.Add(data);
+            }
+            ObjectData data2 = data.ObjectDatas.GetData(name2);
+            if (data2 == null)
+            {
+                data2 = new ObjectData(name2);
+                data.ObjectDatas.Add(data2);
+            }
+            data2.Count++;
+            data.Count++;     
+        }
         private void AddData(List<ObjectData> dataList, string name)
         {
             ObjectData data = dataList.GetData(name);
@@ -297,12 +391,12 @@ namespace FSProject
             }
             data.Count++;
         }
-        private void AddData(List<ObjectData> dataList, double length)
+        private void AddData(List<ObjectData> dataList, double length, EntityType entityType)
         {
             ObjectData data = dataList.GetData(length);
             if (data == null)
             {
-                data = new ObjectData(length);
+                data = new ObjectData(length, entityType);
                 dataList.Add(data);
             }
             data.Count++;
@@ -313,19 +407,23 @@ namespace FSProject
             if (curve == null || curve.IsDisposed || curve.IsErased) return 0;
             return curve.GetDistanceAtParameter(curve.EndParam) - curve.GetDistanceAtParameter(curve.StartParam);
         }
+
         public int CurrentSelect { get; private set; } = 0;
         public int Deleted { get; private set; } = 0;
         public List<ObjectData> Colors { get; private set; } = new List<ObjectData>();
         public List<ObjectData> Layers { get; private set; } = new List<ObjectData>();
         public List<ObjectData> Types { get; private set; } = new List<ObjectData>();
         public List<ObjectData> Lengths { get; private set; } = new List<ObjectData>();
+        public List<ObjectData> TextHeigths { get; private set; } = new List<ObjectData>();
         public List<ObjectData> Attributes { get; private set; } = new List<ObjectData>();
         public List<ObjectId> Ids { get; set; }        
         private Database CurrDb { get; set; } 
         private Document CurrDoc { get; set; }
+        private ObjectId CurrSpaceId { get; set; } = ObjectId.Null;
         public bool Exist { get; private set; } = false;
         public string Name { get; private set; } = "";
         public bool Full { get; set; } = true;
         public int Round { get; set; } = 3;
+
     }
 }

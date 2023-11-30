@@ -51,18 +51,26 @@
             this.Button_Update = new System.Windows.Forms.Button();
             this.Button_NewSet = new System.Windows.Forms.Button();
             this.Button_Options = new System.Windows.Forms.Button();
-            this.Panel_Attributes = new System.Windows.Forms.Panel();
+            this.Panel_AttributesTag = new System.Windows.Forms.Panel();
             this.Check_AllAttributes = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.Button_FullUpdate = new System.Windows.Forms.Button();
             this.Label_Deleted = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.Panel_TextHeight = new System.Windows.Forms.Panel();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.Panel_AttributesValue = new System.Windows.Forms.Panel();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.Panel_Color.SuspendLayout();
             this.Panel_Layer.SuspendLayout();
             this.Panel_Type.SuspendLayout();
             this.Panel_Length.SuspendLayout();
             this.Panel_All.SuspendLayout();
-            this.Panel_Attributes.SuspendLayout();
+            this.Panel_AttributesTag.SuspendLayout();
+            this.Panel_TextHeight.SuspendLayout();
+            this.Panel_AttributesValue.SuspendLayout();
             this.SuspendLayout();
             // 
             // Panel_Color
@@ -70,9 +78,9 @@
             this.Panel_Color.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Panel_Color.Controls.Add(this.Check_AllColors);
             this.Panel_Color.Controls.Add(this.label1);
-            this.Panel_Color.Location = new System.Drawing.Point(122, 52);
+            this.Panel_Color.Location = new System.Drawing.Point(164, 52);
             this.Panel_Color.Name = "Panel_Color";
-            this.Panel_Color.Size = new System.Drawing.Size(270, 150);
+            this.Panel_Color.Size = new System.Drawing.Size(250, 150);
             this.Panel_Color.TabIndex = 0;
             // 
             // Check_AllColors
@@ -102,9 +110,9 @@
             this.Panel_Layer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Panel_Layer.Controls.Add(this.Check_AllLayers);
             this.Panel_Layer.Controls.Add(this.label2);
-            this.Panel_Layer.Location = new System.Drawing.Point(122, 208);
+            this.Panel_Layer.Location = new System.Drawing.Point(164, 208);
             this.Panel_Layer.Name = "Panel_Layer";
-            this.Panel_Layer.Size = new System.Drawing.Size(270, 150);
+            this.Panel_Layer.Size = new System.Drawing.Size(250, 150);
             this.Panel_Layer.TabIndex = 1;
             // 
             // Check_AllLayers
@@ -134,9 +142,9 @@
             this.Panel_Type.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Panel_Type.Controls.Add(this.Check_AllTypes);
             this.Panel_Type.Controls.Add(this.label3);
-            this.Panel_Type.Location = new System.Drawing.Point(122, 364);
+            this.Panel_Type.Location = new System.Drawing.Point(164, 364);
             this.Panel_Type.Name = "Panel_Type";
-            this.Panel_Type.Size = new System.Drawing.Size(270, 150);
+            this.Panel_Type.Size = new System.Drawing.Size(250, 150);
             this.Panel_Type.TabIndex = 1;
             // 
             // Check_AllTypes
@@ -166,9 +174,9 @@
             this.Panel_Length.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.Panel_Length.Controls.Add(this.Check_AllLengths);
             this.Panel_Length.Controls.Add(this.label4);
-            this.Panel_Length.Location = new System.Drawing.Point(398, 52);
+            this.Panel_Length.Location = new System.Drawing.Point(420, 52);
             this.Panel_Length.Name = "Panel_Length";
-            this.Panel_Length.Size = new System.Drawing.Size(270, 150);
+            this.Panel_Length.Size = new System.Drawing.Size(250, 150);
             this.Panel_Length.TabIndex = 2;
             // 
             // Check_AllLengths
@@ -248,7 +256,7 @@
             this.Panel_All.Controls.Add(this.Sets);
             this.Panel_All.Location = new System.Drawing.Point(12, 52);
             this.Panel_All.Name = "Panel_All";
-            this.Panel_All.Size = new System.Drawing.Size(104, 477);
+            this.Panel_All.Size = new System.Drawing.Size(146, 462);
             this.Panel_All.TabIndex = 2;
             // 
             // Sets
@@ -301,15 +309,16 @@
             this.Button_Options.UseVisualStyleBackColor = true;
             this.Button_Options.Click += new System.EventHandler(this.Button_Options_Click);
             // 
-            // Panel_Attributes
+            // Panel_AttributesTag
             // 
-            this.Panel_Attributes.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.Panel_Attributes.Controls.Add(this.Check_AllAttributes);
-            this.Panel_Attributes.Controls.Add(this.label8);
-            this.Panel_Attributes.Location = new System.Drawing.Point(398, 208);
-            this.Panel_Attributes.Name = "Panel_Attributes";
-            this.Panel_Attributes.Size = new System.Drawing.Size(270, 150);
-            this.Panel_Attributes.TabIndex = 5;
+            this.Panel_AttributesTag.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Panel_AttributesTag.Controls.Add(this.Check_AllAttributes);
+            this.Panel_AttributesTag.Controls.Add(this.label8);
+            this.Panel_AttributesTag.Location = new System.Drawing.Point(420, 208);
+            this.Panel_AttributesTag.Name = "Panel_AttributesTag";
+            this.Panel_AttributesTag.Size = new System.Drawing.Size(250, 150);
+            this.Panel_AttributesTag.TabIndex = 5;
+            
             // 
             // Check_AllAttributes
             // 
@@ -329,9 +338,9 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(3, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(55, 16);
+            this.label8.Size = new System.Drawing.Size(80, 16);
             this.label8.TabIndex = 0;
-            this.label8.Text = "Attribute";
+            this.label8.Text = "AttributeTag";
             // 
             // Button_FullUpdate
             // 
@@ -361,15 +370,81 @@
             this.label9.TabIndex = 13;
             this.label9.Text = "Удаленные  -";
             // 
+            // Panel_TextHeight
+            // 
+            this.Panel_TextHeight.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Panel_TextHeight.Controls.Add(this.checkBox1);
+            this.Panel_TextHeight.Controls.Add(this.label7);
+            this.Panel_TextHeight.Location = new System.Drawing.Point(420, 364);
+            this.Panel_TextHeight.Name = "Panel_TextHeight";
+            this.Panel_TextHeight.Size = new System.Drawing.Size(250, 150);
+            this.Panel_TextHeight.TabIndex = 6;
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(6, 19);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(44, 20);
+            this.checkBox1.TabIndex = 4;
+            this.checkBox1.Text = "All";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.Check_All_CheckedChanged);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(72, 16);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "TextHeight";
+            // 
+            // Panel_AttributesValue
+            // 
+            this.Panel_AttributesValue.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.Panel_AttributesValue.Controls.Add(this.checkBox2);
+            this.Panel_AttributesValue.Controls.Add(this.label10);
+            this.Panel_AttributesValue.Location = new System.Drawing.Point(676, 52);
+            this.Panel_AttributesValue.Name = "Panel_AttributesValue";
+            this.Panel_AttributesValue.Size = new System.Drawing.Size(250, 150);
+            this.Panel_AttributesValue.TabIndex = 6;
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Checked = true;
+            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox2.Location = new System.Drawing.Point(6, 19);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(44, 20);
+            this.checkBox2.TabIndex = 4;
+            this.checkBox2.Text = "All";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.Check_All_CheckedChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(3, 0);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(90, 16);
+            this.label10.TabIndex = 0;
+            this.label10.Text = "AttributeValue";
+            // 
             // ObjectsPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(682, 538);
+            this.ClientSize = new System.Drawing.Size(932, 538);
+            this.Controls.Add(this.Panel_AttributesValue);
+            this.Controls.Add(this.Panel_TextHeight);
             this.Controls.Add(this.Label_Deleted);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.Button_FullUpdate);
-            this.Controls.Add(this.Panel_Attributes);
+            this.Controls.Add(this.Panel_AttributesTag);
             this.Controls.Add(this.Button_Options);
             this.Controls.Add(this.Button_NewSet);
             this.Controls.Add(this.Button_Update);
@@ -384,7 +459,7 @@
             this.Controls.Add(this.Panel_Type);
             this.Controls.Add(this.Panel_Layer);
             this.Controls.Add(this.Panel_Color);
-            this.MinimumSize = new System.Drawing.Size(700, 585);
+            this.MinimumSize = new System.Drawing.Size(950, 585);
             this.Name = "ObjectsPanel";
             this.Text = "Panel";
             this.Panel_Color.ResumeLayout(false);
@@ -397,8 +472,12 @@
             this.Panel_Length.PerformLayout();
             this.Panel_All.ResumeLayout(false);
             this.Panel_All.PerformLayout();
-            this.Panel_Attributes.ResumeLayout(false);
-            this.Panel_Attributes.PerformLayout();
+            this.Panel_AttributesTag.ResumeLayout(false);
+            this.Panel_AttributesTag.PerformLayout();
+            this.Panel_TextHeight.ResumeLayout(false);
+            this.Panel_TextHeight.PerformLayout();
+            this.Panel_AttributesValue.ResumeLayout(false);
+            this.Panel_AttributesValue.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -429,11 +508,17 @@
         private System.Windows.Forms.Button Button_Update;
         private System.Windows.Forms.Button Button_NewSet;
         private System.Windows.Forms.Button Button_Options;
-        private System.Windows.Forms.Panel Panel_Attributes;
+        private System.Windows.Forms.Panel Panel_AttributesTag;
         private System.Windows.Forms.CheckBox Check_AllAttributes;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Button Button_FullUpdate;
         private System.Windows.Forms.Label Label_Deleted;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Panel Panel_TextHeight;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Panel Panel_AttributesValue;
+        private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.Label label10;
     }
 }

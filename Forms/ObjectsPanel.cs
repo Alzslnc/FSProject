@@ -13,37 +13,58 @@ namespace FSProject.Forms
 
         public ObjectsPanel()
         {
-            InitializeComponent();
+            InitializeComponent();          
             AddNewData();         
             this.TopMost = true;
+          
             CreateObjects();
-            Panel_All.VerticalScroll.Enabled = true;
-            Panel_All.VerticalScroll.Visible = true;
+          
             Check_Full.Checked = Properties.Settings.Default.Full;
-            Check_Auto.Checked = Properties.Settings.Default.Auto;
+            Check_Auto.Checked = Properties.Settings.Default.Auto;  
         }
 
         private void CreateObjects()
         { 
             Label_All.Text = Data.Ids.Count.ToString();
             Label_Current.Text = Data.Ids.Count.ToString();
-            CreateObjectInPanel(Panel_Color, Data.Colors);
-            CreateObjectInPanel(Panel_Layer, Data.Layers);
-            CreateObjectInPanel(Panel_Type, Data.Types);
-            CreateObjectInPanel(Panel_Length, Data.Lengths);
-            CreateObjectInPanel(Panel_Attributes, Data.Attributes);
+            CreateObjectInPanel(Panel_Color, Data.Colors, false, true);
+            CreateObjectInPanel(Panel_Layer, Data.Layers, false, true);
+            CreateObjectInPanel(Panel_Type, Data.Types, false, true);
+            CreateObjectInPanel(Panel_Length, Data.Lengths, false, true);
+            CreateObjectInPanel(Panel_AttributesTag, Data.Attributes, false, true);
+            CreateObjectInPanel(Panel_TextHeight, Data.TextHeigths, false, true);
+            CreateObjectInPanel(Panel_AttributesValue, Data.Attributes, true, true);
             Check_Full.Checked = Data.Full;
         }
-        private void CreateObjectInPanel(Panel panel, List<ObjectData> datas)
+        private void CreateObjectInPanel(Panel panel, List<ObjectData> datas, bool name2, bool clear)
         {
+            panel.VerticalScroll.Enabled = true;
+            panel.VerticalScroll.Visible = true;
+            panel.AutoScroll = true;
+            int i = 2;
+            bool first = true;
             for (int j = panel.Controls.Count - 1; j > 1; j--)
             {
-                panel.Controls[j]?.Dispose();                            
-            }
+                if (clear)
+                    panel.Controls[j]?.Dispose();
+                else if (first)
+                {
+                    first = false;
+                    i++;
+                } 
+                else first = true;
+            }           
             int round = Data.Round;
-            int i = 2;
+            
             foreach (ObjectData data in datas)
             {
+                if (data == null) continue;
+                if (name2)
+                {
+                    if (!data.Check) continue;
+                    CreateObjectInPanel(panel, data.ObjectDatas, false, false);
+                    continue;
+                }      
                 CheckBox checkBox = new CheckBox
                 {
                     AutoSize = false,
@@ -54,11 +75,13 @@ namespace FSProject.Forms
                     Top = i * 26,
                     Checked = data.Check,
                 };
-                if (data.EntityType == EntityType.Curve) checkBox.Text = data.Length.ToString("F" + round);
-                else if (data.EntityType == EntityType.none) checkBox.Text = data.Name;
+                if (data.EntityType == EntityType.Curve || data.EntityType == EntityType.Text) checkBox.Text = data.Length.ToString("F" + round);              
+                
+                else if (data.EntityType == EntityType.none || data.EntityType == EntityType.BlockReference) checkBox.Text = data.Name;
+                
                 Label label = new Label
                 {
-                    Left = 210,
+                    Left = panel.Width - 60,
                     Width = 48,
                     Top = i * 26,
                     Anchor = AnchorStyles.Right | AnchorStyles.Top,
@@ -72,12 +95,7 @@ namespace FSProject.Forms
                 panel.Controls.Add(checkBox);
                 panel.Controls.Add(label);
                 i++;
-            }
-            if (i > 5)
-            { 
-                panel.VerticalScroll.Enabled = true;
-                panel.VerticalScroll.Visible = true;            
-            }
+            }           
         }
         private void ChangeObject(Object sender, EventArgs e)
         {         
@@ -137,9 +155,23 @@ namespace FSProject.Forms
                         Data.Lengths.CheckChange(selectedObject);                      
                         break;
                     }
-                case "Attribute":
+                case "AttributeTag":
                     {
-                        Data.Attributes.CheckChange(selectedObject);                   
+                        Data.Attributes.CheckChange(selectedObject);
+                        CreateObjectInPanel(Panel_AttributesValue, Data.Attributes, true, true);
+                        break;
+                    }
+                case "AttributeValue":
+                    {
+                        foreach (ObjectData data in Data.Attributes)
+                        { 
+                            data.ObjectDatas.CheckChange(selectedObject);                        
+                        }
+                        break;
+                    }
+                case "TextHeight":
+                    {
+                        Data.TextHeigths.CheckChange(selectedObject);
                         break;
                     }
                 default: return;
@@ -197,11 +229,15 @@ namespace FSProject.Forms
             CreateObjects();
             UpdateSelected();
         }
-        private void UpdateSelected()
-        {          
-            Data.SelectSelected();
-            Label_Current.Text = Data.CurrentSelect.ToString();
-            Label_Deleted.Text = Data.Deleted.ToString();
+        private bool UpdateSelected()
+        {    
+            bool result = Data.SelectSelected();
+            if (result)
+            {
+                Label_Current.Text = Data.CurrentSelect.ToString();
+                Label_Deleted.Text = Data.Deleted.ToString();
+            }
+            return result;
         }
         private void AddNewData()
         {
